@@ -134,7 +134,7 @@ def analysis_config() -> AnalysisConfig:
     return AnalysisConfig(
         sensor_size=6.5,
         magnification=20,
-        fps=30.0,
+        fps=25.0,
         temp=298.0,
         eta=0.00089,
     )

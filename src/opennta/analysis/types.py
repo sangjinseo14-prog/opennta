@@ -11,7 +11,7 @@ from numpy.typing import NDArray
 class AnalysisConfig:
     sensor_size: float = field(default=6.5, metadata={"user_config": True})
     magnification: float = field(default=20, metadata={"user_config": True})
-    fps: float = field(default=30.0, metadata={"user_config": True})
+    fps: float = field(default=25.0, metadata={"user_config": True})
     temp: float = field(default=295.15, metadata={"user_config": True})
     eta: float = field(default=0.0009544, metadata={"user_config": True})
     KB: float = 1.380649e-23

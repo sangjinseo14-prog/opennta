@@ -26,7 +26,7 @@ def analysis_config_module() -> AnalysisConfig:
     module-scoped ``monodisperse_pipeline_state`` fixture below can depend
     on it."""
     return AnalysisConfig(
-        sensor_size=6.5, magnification=20, fps=30.0,
+        sensor_size=6.5, magnification=20, fps=25.0,
         temp=298.0, eta=0.00089,
     )
 
