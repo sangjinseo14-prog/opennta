@@ -49,10 +49,10 @@ ASSET_FILES: tuple[str, ...] = (
 # value as None to skip that file; fill in real hashes after a trusted upload to
 # harden integrity beyond the single zip-level checksum.
 ASSET_FILE_SHA256: dict[str, str | None] = {
-    "best.weights.h5": None,
-    "meta.csv": None,
-    "norm.json": None,
-    "reference_field.npz": None,
+    "best.weights.h5": "a219edcae9c74532cf72ba6e717832f405cecfdbfc1059261d4c9522b50d4c55",
+    "meta.csv": "c94b7516420e645c1e3e3309407a341f01824b0c429175fd77506ed9918e959c",
+    "norm.json": "21795a1f2239dcdf136d248534cac70941856c86c195688b490de4a7e191d17d",
+    "reference_field.npz": "b3503793b57e93b9a475509c38bbde04abda3cae3b13306f67a65aff36a1d209",
 }
 
 
