@@ -1,0 +1,78 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+build/
+dist/
+sdist/
+wheels/
+*.egg
+*.egg-info/
+*.manifest
+*.spec
+pip-wheel-metadata/
+share/python-wheels/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# uv
+uv.lock
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+.nox/
+.cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# --- Editors / IDEs ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+# Visual Studio Python Tools (opennta.sln / opennta.pyproj are tracked;
+# only ignore per-user artifacts).
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# --- OpenNTA specific ---
+# Legacy app config dump (older builds wrote into ./temp; current builds
+# use platformdirs, but ignore for safety on existing checkouts).
+temp/config.json
+temp/fiji_path.txt
+temp/*.json
+temp/*.txt
+
+# Dependencies
+opennta_deps.svg
+
+# UNet bundle assets (downloaded via download_assets.py)
+/src/opennta/analysis/unet_field/unet_bundle/unet_assets/best.weights.h5
+/src/opennta/analysis/unet_field/unet_bundle/unet_assets/meta.csv
+/src/opennta/analysis/unet_field/unet_bundle/unet_assets/norm.json
+/src/opennta/analysis/unet_field/unet_bundle/unet_assets/reference_field.npz
+
+# setuptools-scm generated version file
+/src/opennta/_version.py

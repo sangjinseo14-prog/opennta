@@ -1,0 +1,139 @@
+[project]
+name = "opennta"
+description = "Desktop app for Nanoparticle Tracking Analysis (TIFF -> TrackMate -> drift correction -> size distribution)."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [{ name = "Sangjin Seo" }]
+keywords = ["NTA", "nanoparticle", "tracking", "TrackMate", "microscopy"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+]
+dynamic = ["version"]
+dependencies = [
+    # Core scientific stack
+    "matplotlib>=3.8,<3.11",
+    "numpy>=1.26,<3.0",
+    "pandas>=2.1,<3.0",
+    "pillow>=10.0,<12.0",
+    "platformdirs>=4.3,<5.0",
+    "psutil>=5.9,<6.0",
+    "scipy>=1.10,<2.0",
+    "tifffile>=2023.12,<2026.0",
+    # Qt-based GUI stack
+    "PyQt5>=5.15.4,<5.16",
+    "PyQtWebEngine>=5.15.4,<5.16",
+    "QDarkStyle>=3.2,<4.0",
+]
+
+[project.optional-dependencies]
+# U-Net deep learning extras (loaded lazily; not needed for the core pipeline)
+unet = [
+    "tensorflow==2.21.0",
+    "opencv-python>=4.8,<5.0",
+]
+
+# Convenience alias: core + unet
+full = ["opennta[unet]"]
+
+# Test-time extras
+dev = [
+    "pytest>=8.0,<9.0",
+    "graphviz>=0.20,<1.0",
+]
+
+[project.scripts]
+opennta = "opennta.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/sangjinseo14-prog/opennta"
+Issues   = "https://github.com/sangjinseo14-prog/opennta/issues"
+
+[build-system]
+requires = ["setuptools>=80", "setuptools-scm>=8", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["opennta*"]
+
+[tool.setuptools.package-data]
+"opennta.application.main_window" = ["logo.png"]
+
+[tool.setuptools_scm]
+version_file = "src/opennta/_version.py"
+fallback_version = "0.0.0+unknown"
+git_describe_command = ["git", "describe", "--dirty", "--tags", "--long", "--match", "v[0-9]*"]
+tag_regex = "^v(?P<version>[0-9].*)$"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+python_files = ["test_*.py"]
+addopts = "-ra --strict-markers"
+markers = [
+    "integration: end-to-end pipeline tests; slower than unit tests.",
+    "slow: tests that take noticeably longer (>1s); deselect via -m 'not slow'.",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["opennta"]
+branch = true
+omit = [
+    "src/opennta/application/*",
+    "src/opennta/tracking/trackmate/scripts/*",
+    "src/opennta/_version.py",
+    "tests/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "\\.\\.\\.",
+]
+show_missing = true
+skip_covered = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = [
+    "src/opennta/tracking/trackmate/scripts",
+    "src/opennta/_version.py",
+]
+
+[tool.ruff.lint]
+# Conservative starter set: real bugs (F, B) + pep8 (E,W) + import hygiene (I).
+# We intentionally skip stylistic-only families for now to keep the initial
+# adoption noise-free; tighten later in a follow-up.
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = [
+    "E501",   # line length is enforced by formatter, not lint
+    "B008",   # PyQt signal/slot patterns legitimately call in defaults
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B"]
+"src/opennta/__init__.py" = ["F401"]
+"src/opennta/analysis/__init__.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["opennta"]

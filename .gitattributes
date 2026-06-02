@@ -1,0 +1,125 @@
+###############################################################################
+# Set default behavior to automatically normalize line endings.
+###############################################################################
+* text=auto
+
+###############################################################################
+# Python specific settings
+###############################################################################
+*.py text eol=lf encoding=utf-8
+*.pyw text eol=lf encoding=utf-8
+*.pyx text eol=lf encoding=utf-8
+*.pxd text eol=lf encoding=utf-8
+
+###############################################################################
+# Configuration and data files
+###############################################################################
+*.json text eol=lf encoding=utf-8
+*.yml text eol=lf encoding=utf-8
+*.yaml text eol=lf encoding=utf-8
+*.toml text eol=lf encoding=utf-8
+*.ini text eol=lf encoding=utf-8
+*.cfg text eol=lf encoding=utf-8
+*.txt text eol=lf encoding=utf-8
+*.md text eol=lf encoding=utf-8
+*.rst text eol=lf encoding=utf-8
+*.csv text eol=lf encoding=utf-8
+
+###############################################################################
+# Qt UI files (PyQt5)
+###############################################################################
+*.ui text eol=lf encoding=utf-8
+*.qrc text eol=lf encoding=utf-8
+
+###############################################################################
+# Shell scripts
+###############################################################################
+*.sh text eol=lf
+*.bash text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+###############################################################################
+# Visual Studio / .NET project files (keep for pyproj)
+###############################################################################
+*.sln text eol=crlf
+*.pyproj text eol=crlf
+*.csproj text eol=crlf
+*.vcxproj text eol=crlf
+
+# Exclude IDE-specific project files from `git archive` source bundles
+# (GitHub auto-generated zip/tar.gz on release). They stay in the repo for
+# developers but are not shipped to end users.
+*.sln    export-ignore
+*.pyproj export-ignore
+
+###############################################################################
+# Binary files
+###############################################################################
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.bmp binary
+*.tif binary
+*.tiff binary
+*.pdf binary
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.zip binary
+*.tar binary
+*.gz binary
+*.7z binary
+*.db binary
+*.sqlite binary
+*.pkl binary
+*.pickle binary
+*.npy binary
+*.npz binary
+*.h5 binary
+*.hdf5 binary
+
+###############################################################################
+# Python compiled files
+###############################################################################
+*.pyc binary
+*.pyo binary
+*.pyd binary
+*.whl binary
+*.egg binary
+
+###############################################################################
+# Documentation
+###############################################################################
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.xml text eol=lf
+
+###############################################################################
+# Git specific
+###############################################################################
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.gitmodules text eol=lf
+
+###############################################################################
+# Jupyter Notebooks
+###############################################################################
+*.ipynb text eol=lf
+
+###############################################################################
+# Diff behavior for specific files
+###############################################################################
+# Python files should use Python diff driver
+*.py diff=python
+*.pyw diff=python
+
+# Image files should show binary difference
+*.png diff=exif
+*.jpg diff=exif
+*.jpeg diff=exif
