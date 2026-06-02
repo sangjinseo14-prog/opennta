@@ -236,7 +236,7 @@ _DATA_CELL_TIGHT = 26
 
 
 def _format_number(value, scientific: bool = False) -> str:
-    if not isinstance(value, (int, float)):
+    if not isinstance(value, int | float):
         return str(value)
     fvalue = float(value)
     if scientific:
@@ -328,7 +328,7 @@ def _format_distribution_section(key: str, stats: dict, index: int) -> str:
 
 
 def _format_value_with_unit(value: float, unit: str) -> str:
-    if isinstance(value, (int, float)):
+    if isinstance(value, int | float):
         return _render_value_cell(value, unit, scientific=True)
     formatted = str(value)
     unit_html = f' <span class="unit">{unit}</span>' if unit else ""

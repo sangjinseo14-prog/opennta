@@ -274,7 +274,7 @@ def preprocess_actual_spots_to_flow(
     flow_df = flow_df.sort_values(["particle_id", "frame_idx"]).reset_index(drop=True)
 
     serializable_tform = {
-        k: float(v) if isinstance(v, (int, float, np.integer, np.floating)) else v
+        k: float(v) if isinstance(v, int | float | np.integer | np.floating) else v
         for k, v in tform.items()
     }
 
