@@ -296,7 +296,7 @@ After running the Batch tab, OpenNTA generates an output folder under
    tracking artifacts into per-sample subfolders.
 
 <p align="center">
-<img width="600" alt="tab_track" src="https://github.com/user-attachments/assets/fa0e063d-1598-45a1-bd77-b18caed17e93" />
+<img width="600" alt="tracking" src="https://github.com/user-attachments/assets/d542c26c-b7e8-44c2-86f7-994322967b0a" />
 </p>
 
 #### Tracking method 1: TrackMate
@@ -307,8 +307,9 @@ parameters. It is launched automatically when **Run tracking** is hit with
 TrackMate selected as the method.
 
 <p align="center">
-<img width="600" alt="dialog_trackmate" src="https://github.com/user-attachments/assets/ad335e3b-fed1-4ae7-bb59-9c0d164344c3" />
+<img width="600" alt="trackmate" src="https://github.com/user-attachments/assets/28aaaad2-76a0-46f3-b9aa-e82342c9d868" />
 </p>
+
 
 ### Analysis tab
 
@@ -323,17 +324,15 @@ TrackMate selected as the method.
 
    **Units.** Each field is entered in the unit shown next to it in the dialog:
 
-   | Field | Unit | Default | Notes |
-   |-------|------|---------|-------|
-   | Sensor pixel size | µm | 6.5 | |
-   | Lens magnification | × | 20 | |
-   | Frames per second | Hz | 30 | |
-   | Temperature | **K** (Kelvin) | 298 | absolute temperature, *not* °C |
-   | Viscosity | **mPa·s** | 0.89 | water at ~25 °C is 0.89 mPa·s |
+   | Field | Unit | Default |
+   |-------|------|---------|
+   | Sensor pixel size | µm | 6.5 |
+   | Lens magnification | × | 20 |
+   | Frames per second | Hz | 25 |
+   | Temperature | **K** (Kelvin) | 295.15 |
+   | Viscosity | **mPa·s** | 0.9544 |
 
-   The unit is stored alongside each value in `config.json` and converted to SI
-   internally (viscosity → Pa·s, temperature → Kelvin), so the number you type
-   is interpreted in the displayed unit.
+   The unit is stored alongside each value in `config.json`.
 
    <details>
    <summary><b>Config file location</b></summary>
@@ -362,8 +361,9 @@ TrackMate selected as the method.
    styles, and export the results.
 
 <p align="center">
-<img width="600" alt="tab_analysis" src="https://github.com/user-attachments/assets/fd9d7977-0fdc-4726-a8e1-3fbf8610f085" />
+<img width="600" alt="analysis" src="https://github.com/user-attachments/assets/284a9886-9b83-4949-99bd-52c9abd092ee" />
 </p>
+
 
 #### Correction mode 1 — Global: Mean
 
@@ -384,8 +384,10 @@ csv** to additionally write the fitted field to the Desktop as
 `<spots-name>_<mode>_uv field.csv` (`x, y, u, v`, with `u, v` in m/s).
 
 <p align="center">
-<img width="600" alt="dialog_numerical_corrector" src="https://github.com/user-attachments/assets/6522d5ad-32e5-4215-859c-beaaf5db4d1d" />
+<img width="600" alt="numerical" src="https://github.com/user-attachments/assets/ac645c34-049c-458b-bd20-738cd4c30cc6" />
 </p>
+
+
 
 #### Correction mode 3 — Field: U-Net
 
@@ -397,8 +399,10 @@ exposes an **Export velocity fields as csv** checkbox to write the predicted
 field as a `*_field.csv`.
 
 <p align="center">
-<img width="600" alt="dialog_UNet_corrector" src="https://github.com/user-attachments/assets/c4315f59-8922-4ffb-8330-06536ba11e37" />
+<img width="600" alt="unet" src="https://github.com/user-attachments/assets/39891d3f-53a4-4918-9bb7-030fc6453061" />
 </p>
+
+
 
 ### Batch tab
 
@@ -419,7 +423,7 @@ inspection and the Batch tab for handling multiple results at once.
    `size_YYYYMMDD_#/` folder.
 
 <p align="center">
-<img width="600" alt="tab_batch" src="https://github.com/user-attachments/assets/2b6cd434-317b-4065-af89-9ff78de76865" />
+<img width="600" alt="batch" src="https://github.com/user-attachments/assets/98b4046a-b91e-4775-ae4a-53f29e2fc449" />
 </p>
 
 ### Outputs
