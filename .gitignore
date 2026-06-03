@@ -38,18 +38,31 @@ coverage.xml
 htmlcov/
 
 # --- Editors / IDEs ---
-.idea/
+
+# VS Code
 .vscode/
-*.swp
-*.swo
-*~
-# Visual Studio Python Tools (opennta.sln / opennta.pyproj are tracked;
-# only ignore per-user artifacts).
+
+# Visual Studio
 .vs/
+*.sln
+*.pyproj
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
+
+# JetBrains IDEs: PyCharm, IntelliJ, CLion, etc.
+.idea/
+
+# Eclipse / PyDev
+.project
+.pydevproject
+.settings/
+
+# Vim / swap / backup files
+*.swp
+*.swo
+*~
 
 # --- OS ---
 .DS_Store
@@ -58,8 +71,8 @@ ehthumbs.db
 desktop.ini
 
 # --- OpenNTA specific ---
-# Legacy app config dump (older builds wrote into ./temp; current builds
-# use platformdirs, but ignore for safety on existing checkouts).
+
+# Temporary files.
 temp/config.json
 temp/fiji_path.txt
 temp/*.json
