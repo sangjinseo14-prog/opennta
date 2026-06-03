@@ -1,5 +1,6 @@
 # OpenNTA
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20518443.svg)](https://doi.org/10.5281/zenodo.20518443)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![PyQt5](https://img.shields.io/badge/GUI-PyQt5-brightgreen.svg)](https://riverbankcomputing.com/software/pyqt/)
@@ -319,8 +320,10 @@ TrackMate selected as the method.
    fps, temperature, viscosity).
 
    <p align="center">
-   <img width="300" alt="config" src="https://github.com/user-attachments/assets/d0b55c92-7cb3-4a0e-a18e-bd439e61b40e" />
+   <img width="300"alt="config" src="https://github.com/user-attachments/assets/9fb7908e-701b-443d-8c9a-5c8f2d315df1" />
    </p>
+
+
 
    **Units.** Each field is entered in the unit shown next to it in the dialog:
 
