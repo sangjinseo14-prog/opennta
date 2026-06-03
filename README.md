@@ -320,8 +320,10 @@ TrackMate selected as the method.
    fps, temperature, viscosity).
 
    <p align="center">
-   <img width="300" alt="config" src="https://github.com/user-attachments/assets/d0b55c92-7cb3-4a0e-a18e-bd439e61b40e" />
+   <img width="300"alt="config" src="https://github.com/user-attachments/assets/9fb7908e-701b-443d-8c9a-5c8f2d315df1" />
    </p>
+
+
 
    **Units.** Each field is entered in the unit shown next to it in the dialog:
 
