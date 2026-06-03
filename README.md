@@ -1,5 +1,6 @@
 # OpenNTA
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20518443.svg)](https://doi.org/10.5281/zenodo.20518443)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![PyQt5](https://img.shields.io/badge/GUI-PyQt5-brightgreen.svg)](https://riverbankcomputing.com/software/pyqt/)
