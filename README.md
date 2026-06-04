@@ -475,7 +475,6 @@ opennta/                                     # repository root
 ├── pyproject.toml                           # build / dependency / tool config (single source)
 ├── README.md
 ├── LICENSE
-├── opennta.sln, opennta.pyproj             # Visual Studio Python Tools project files
 │
 ├── docs/                                    # style guides & contribution docs
 │   ├── CONTRIBUTING.md
