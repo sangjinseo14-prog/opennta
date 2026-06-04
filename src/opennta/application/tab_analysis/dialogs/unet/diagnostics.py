@@ -5,7 +5,7 @@ import os
 from opennta.analysis.unet_field.unet_corrector import UNetDiagnosticState
 
 from . import _plot_style as _ps
-from ._plot_style import apply_dark_plot_theme
+from ._plot_style import apply_dark_plot_theme, recolor_for_export
 
 
 def save_unet_diagnostics(
@@ -34,4 +34,5 @@ def save_unet_diagnostics(
     )
     FigureCanvasAgg(fig)
     out_path = os.path.join(out_dir, f"{basename}_ml_field.png")
-    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    recolor_for_export(fig)
+    fig.savefig(out_path, dpi=150, bbox_inches="tight", transparent=True)

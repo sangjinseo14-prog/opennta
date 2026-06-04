@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import matplotlib as mpl
 from matplotlib.figure import Figure
+from matplotlib.lines import Line2D
+from matplotlib.spines import Spine
+from matplotlib.text import Text
 
 # Palette aligned with qdarkstyle (PyQt5).
 BG_FIGURE = "#19232D"   # qdarkstyle window background
@@ -122,3 +125,15 @@ def style_figure(fig: Figure) -> Figure:
     fig.set_facecolor(BG_FIGURE)
     fig.patch.set_facecolor(BG_FIGURE)
     return fig
+
+
+def recolor_for_export(fig: Figure, color: str = "black") -> None:
+    for text in fig.findobj(Text):
+        text.set_color(color)
+    for spine in fig.findobj(Spine):
+        spine.set_edgecolor(color)
+
+    for line in fig.findobj(Line2D):
+        line.set_color(color)
+    for ax in fig.axes:  # includes colorbar axes
+        ax.tick_params(axis="both", which="both", color=color, labelcolor=color)
