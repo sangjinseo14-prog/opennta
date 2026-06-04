@@ -2,14 +2,14 @@
 
 from .fiji_runner import FijiRunner
 from .fitting import FittingEngine
-from .fitting_models import CS210Model, GaussianModel, Poly2Model, get_model_class
+from .fitting_models import ChengSchwartzmanModel, GaussianModel, Poly2Model, get_model_class
 from .image_processor import ImageProcessor
 from .method import SCRIPT_THRESHOLD, SCRIPT_TRACKING, TrackMateMethod
 from .threshold_calculator import ThresholdCalculator
 from .types import FitResult, ThresholdResult
 
 __all__ = [
-    "CS210Model",
+    "ChengSchwartzmanModel",
     "FijiRunner",
     "FitResult",
     "FittingEngine",

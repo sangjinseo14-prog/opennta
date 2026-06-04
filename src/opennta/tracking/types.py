@@ -18,7 +18,7 @@ class ProcessingParams:
         method: str = "trackmate",
         detection_method: str = "",
         linking_method: str = "",
-        quality_model: str = "CS210",
+        quality_model: str = "Cheng-Schwartzman",
     ) -> None:
         self.normalization_percentile: float = float(normalization_percentile)
         self.particle_radius_pixels: float = float(particle_radius_pixels)
@@ -32,7 +32,7 @@ class ProcessingParams:
         self.method: str = str(method or "trackmate").lower()
         self.detection_method: str = str(detection_method or "").lower()
         self.linking_method: str = str(linking_method or "").lower()
-        self.quality_model: str = str(quality_model or "CS210")
+        self.quality_model: str = str(quality_model or "Cheng-Schwartzman")
 
 
 # (sub_path, tiff_paths, nta_folder, sub_name)

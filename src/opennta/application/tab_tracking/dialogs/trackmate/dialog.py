@@ -64,7 +64,7 @@ class TrackMateDialog(_PlotBuilderMixin, _UIBuilderMixin, QDialog):
             getattr(self, widget_attr).setValue(cast(getattr(p, field)))
         idx = self.combo_quality_model.findText(p.quality_model)
         if idx < 0:
-            idx = self.combo_quality_model.findText("CS210")
+            idx = self.combo_quality_model.findText("Cheng-Schwartzman")
         self.combo_quality_model.setCurrentIndex(max(idx, 0))
 
     def get_processing_params(self) -> ProcessingParams:
@@ -74,7 +74,7 @@ class TrackMateDialog(_PlotBuilderMixin, _UIBuilderMixin, QDialog):
             method=self._initial_params.method,
             detection_method=self._initial_params.detection_method,
             linking_method=self._initial_params.linking_method,
-            quality_model=self.combo_quality_model.currentText() or "CS210",
+            quality_model=self.combo_quality_model.currentText() or "Cheng-Schwartzman",
         )
 
     def _set_preview_controls_enabled(self, enabled: bool) -> None:

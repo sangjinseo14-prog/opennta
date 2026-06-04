@@ -5,7 +5,7 @@ from numpy.typing import NDArray
 from scipy import stats
 from scipy.interpolate import CubicSpline
 
-CS210_DEFAULT_KAPPA = 0.999  # near 1.0 freezes kappa; lower values relax the constraint
+CHENG_SCHWARTZMAN_DEFAULT_KAPPA = 0.999  # near 1.0 freezes kappa; lower values relax the constraint
 
 # Upper bound (in standardized z = (u - mu)/sigma) of the tail-integration
 # support when solving for the auto-threshold: beyond z = 6 values are
@@ -35,10 +35,10 @@ def _capped_upper_tail(cdf_standardized, z0: float,
     return float(np.clip((cdf_cap - cdf_0) / cdf_cap, 0.0, 1.0))
 
 
-class CS210Model:
+class ChengSchwartzmanModel:
     """Cheng & Schwartzman (2015), eq. (2.10). Params: mu, sigma, kappa."""
 
-    model_name = "CS210"
+    model_name = "Cheng-Schwartzman"
     default_frac = 0.80
 
     def __init__(self):
@@ -56,7 +56,7 @@ class CS210Model:
     def _std_normal_cdf(z: NDArray[np.floating]) -> NDArray[np.floating]:
         return stats.norm.cdf(z)
 
-    def _cs210_standardized_density(self, x: NDArray[np.floating], kappa: float) -> float:
+    def _cheng_schwartzman_standardized_density(self, x: NDArray[np.floating], kappa: float) -> float:
         x = np.asarray(x, dtype=float)
         k = float(np.clip(kappa, 1e-6, 0.999))
 
@@ -81,7 +81,7 @@ class CS210Model:
         if sigma <= 0 or not np.isfinite(sigma):
             return np.full_like(np.asarray(u, dtype=float), np.nan)
         z = (np.asarray(u, dtype=float) - float(mu)) / float(sigma)
-        return (1.0 / abs(float(sigma))) * self._cs210_standardized_density(z, kappa)
+        return (1.0 / abs(float(sigma))) * self._cheng_schwartzman_standardized_density(z, kappa)
 
     def tail_probability(self, u0: float, mu: float, sigma: float, kappa: float, **_) -> float:
         if sigma <= 0 or not np.isfinite(sigma):
@@ -95,13 +95,13 @@ class CS210Model:
         mu0 = float(np.median(subset))
         mad0 = float(stats.median_abs_deviation(subset, scale=1.0))
         sig0 = max(1e-3, 1.4826 * mad0)
-        return np.array([mu0, sig0, CS210_DEFAULT_KAPPA], dtype=float)
+        return np.array([mu0, sig0, CHENG_SCHWARTZMAN_DEFAULT_KAPPA], dtype=float)
 
     def get_bounds(self) -> list[tuple[float | None, float | None]]:
         return [
             (None, None),
             (1e-6, None),
-            (CS210_DEFAULT_KAPPA, CS210_DEFAULT_KAPPA),
+            (CHENG_SCHWARTZMAN_DEFAULT_KAPPA, CHENG_SCHWARTZMAN_DEFAULT_KAPPA),
         ]
 
     def get_retry_params(self, data: NDArray[np.floating], u_cut: float, attempt: int) -> NDArray[np.floating] | None:
@@ -111,10 +111,10 @@ class CS210Model:
         mu0 = float(np.median(subset))
         mad0 = float(stats.median_abs_deviation(subset, scale=1.0))
         sig0 = max(1e-3, 1.4826 * mad0 * 0.7)
-        return np.array([mu0, sig0, CS210_DEFAULT_KAPPA], dtype=float)
+        return np.array([mu0, sig0, CHENG_SCHWARTZMAN_DEFAULT_KAPPA], dtype=float)
 
     def get_plot_label(self, params: dict[str, float]) -> str:
-        kappa = params.get("kappa", CS210_DEFAULT_KAPPA)
+        kappa = params.get("kappa", CHENG_SCHWARTZMAN_DEFAULT_KAPPA)
         return f"C&S (2.10) fit, kappa={kappa:.3f}"
 
     def validate_params(self, params: dict[str, float]) -> bool:
@@ -152,7 +152,7 @@ class CS210Model:
         from scipy.integrate import cumulative_trapezoid
 
         z_grid = np.linspace(-12.0, 20.0, 4001)
-        pdf_vals = self._cs210_standardized_density(z_grid, kappa)
+        pdf_vals = self._cheng_schwartzman_standardized_density(z_grid, kappa)
         cdf_vals = cumulative_trapezoid(pdf_vals, z_grid, initial=0.0)
 
         spline = CubicSpline(z_grid, cdf_vals, extrapolate=True)
@@ -293,7 +293,7 @@ class GaussianModel:
 
 
 MODEL_CLASSES = {
-    "CS210": CS210Model,
+    "Cheng-Schwartzman": ChengSchwartzmanModel,
     "Poly2": Poly2Model,
     "Gaussian": GaussianModel,
 }
