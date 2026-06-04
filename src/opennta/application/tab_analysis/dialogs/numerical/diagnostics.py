@@ -9,7 +9,7 @@ from opennta.analysis.numerical_field.numerical_corrector import (
 )
 
 from . import _plot_style as _ps
-from ._plot_style import apply_dark_plot_theme, style_figure
+from ._plot_style import apply_dark_plot_theme, recolor_for_export, style_figure
 
 
 def save_numerical_diagnostics(
@@ -100,7 +100,8 @@ def save_numerical_diagnostics(
         _ps.draw_quiver_overlay(ax_sm, stats.mean_dx, stats.mean_dy)
 
     fig.tight_layout()
-    fig.savefig(out_path, bbox_inches="tight")
+    recolor_for_export(fig)
+    fig.savefig(out_path, bbox_inches="tight", transparent=True)
 
 
 def _draw_field_panel(fig, ax, data, cmap: str, title: str, unit: str) -> None:

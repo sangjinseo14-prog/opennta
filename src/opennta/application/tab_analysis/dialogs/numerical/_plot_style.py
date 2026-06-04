@@ -10,6 +10,9 @@ from matplotlib.cm import ScalarMappable
 from matplotlib.collections import LineCollection
 from matplotlib.colors import Normalize
 from matplotlib.figure import Figure
+from matplotlib.lines import Line2D
+from matplotlib.spines import Spine
+from matplotlib.text import Text
 
 # Palette aligned with qdarkstyle (PyQt5) + the app accent #1c74ff.
 BG_FIGURE = "#19232D"   # qdarkstyle window background
@@ -96,6 +99,16 @@ def style_figure(fig: Figure) -> Figure:
     fig.set_facecolor(BG_FIGURE)
     fig.patch.set_facecolor(BG_FIGURE)
     return fig
+
+def recolor_for_export(fig: Figure, color: str = "black") -> None:
+    for text in fig.findobj(Text):
+        text.set_color(color)
+    for spine in fig.findobj(Spine):
+        spine.set_edgecolor(color)
+    for line in fig.findobj(Line2D):
+        line.set_color(color)
+    for ax in fig.axes:  
+        ax.tick_params(axis="both", which="both", color=color, labelcolor=color)
 
 # Titles use MathText so subscripts render in both Qt-embedded and Agg figures.
 PLOT_SPECS = (
