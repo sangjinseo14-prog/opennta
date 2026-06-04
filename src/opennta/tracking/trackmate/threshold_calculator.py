@@ -17,7 +17,7 @@ class ThresholdCalculator:
     def __init__(
         self,
         emitter: ProgressEmitter | None = None,
-        model_name: str = "CS210",
+        model_name: str = "Cheng-Schwartzman",
     ):
         self.emitter = emitter or ProgressEmitter()
         self.model_name = model_name

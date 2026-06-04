@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class FittingEngine:
 
-    def __init__(self, model: str | ModelType = "CS210"):
+    def __init__(self, model: str | ModelType = "Cheng-Schwartzman"):
         if isinstance(model, str):
             model_class = get_model_class(model)
             self.model = model_class()

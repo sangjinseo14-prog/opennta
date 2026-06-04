@@ -1,6 +1,6 @@
 """Unit tests for the TrackMate threshold *distribution models*.
 
-These models (``CS210``, ``Poly2``, ``Gaussian``) are the pure-math core of
+These models (``Cheng-Schwartzman``, ``Poly2``, ``Gaussian``) are the pure-math core of
 the Fiji threshold step: each defines an (untruncated) peak-quality density,
 its upper-tail probability, and the truncation normalizer the MLE fitter
 divides by. They are Fiji-independent — the module docstring even states they
@@ -20,7 +20,7 @@ import pytest
 from scipy import integrate
 
 from opennta.tracking.trackmate.fitting_models import (
-    CS210Model,
+    ChengSchwartzmanModel,
     GaussianModel,
     Poly2Model,
     get_model_class,
@@ -29,7 +29,7 @@ from opennta.tracking.trackmate.fitting_models import (
 # Representative, valid parameter sets per model (near-Gaussian shapes).
 MODEL_PARAMS = {
     "Gaussian": (GaussianModel, {"mu": 50.0, "sigma": 5.0}),
-    "CS210": (CS210Model, {"mu": 50.0, "sigma": 5.0, "kappa": 0.999}),
+    "Cheng-Schwartzman": (ChengSchwartzmanModel, {"mu": 50.0, "sigma": 5.0, "kappa": 0.999}),
     "Poly2": (Poly2Model, {"mu": 50.0, "sigma": 5.0, "a0": 1.0, "a1": 0.0, "a2": 0.3}),
 }
 MODEL_IDS = list(MODEL_PARAMS)
@@ -127,7 +127,7 @@ def test_tail_uses_capped_normalization(model_and_params):
     tail = (F(8) - F(z0)) / F(8). Deep in the lower tail essentially all of the
     (capped) background mass lies above the threshold, giving tail ~ 1 -- this
     is the shared convention that makes alpha comparable across models, instead
-    of Gaussian integrating to +inf while CS210 stopped at z=8."""
+    of Gaussian integrating to +inf while Cheng-Schwartzman stopped at z=8."""
     model, params = model_and_params
     mu, sigma = params["mu"], params["sigma"]
     assert model.tail_probability(mu - 6 * sigma, **params) == pytest.approx(1.0, abs=1e-3)

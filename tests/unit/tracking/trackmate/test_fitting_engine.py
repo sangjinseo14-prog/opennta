@@ -31,7 +31,7 @@ def test_gaussian_fit_recovers_bulk_parameters():
     assert result["sigma"] == pytest.approx(bg_sigma, rel=0.1)
 
 
-@pytest.mark.parametrize("model_name", ["Gaussian", "CS210", "Poly2"])
+@pytest.mark.parametrize("model_name", ["Gaussian", "Cheng-Schwartzman", "Poly2"])
 def test_calculate_threshold_separates_bulk_from_spike(model_name):
     values, n_spike, bg_mu, bg_sigma, spike_value = _synth.quality_samples(seed=2)
     engine = FittingEngine(model_name)

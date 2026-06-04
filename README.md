@@ -229,8 +229,8 @@ After running the Track tab, OpenNTA generates an output folder under `Folder/`:
 └── OpenNTA_Results_YYYYMMDD_HHMMSS/             <- Select this folder in the Batch tab
     ├── NTA_1_<name>/
     │   ├── *_first_frame_quality.csv
-    │   ├── *_first_frame_CS210_fit.csv
-    │   ├── *_first_frame_CS210_fit.png
+    │   ├── *_first_frame_Cheng-Schwartzman_fit.csv
+    │   ├── *_first_frame_Cheng-Schwartzman_fit.png
     │   ├── *_spots.csv                          <- Select one of these in the Analysis tab
     │   └── ...                                  # repeated for measurements 1 to n
     ├── ...
@@ -435,8 +435,8 @@ inspection and the Batch tab for handling multiple results at once.
 
 - `OpenNTA_Results_{timestamp}/` — main output folder for a tracking run.
 - `*_first_frame_quality.csv` — TrackMate spot quality values for the first frame.
-- `*_first_frame_CS210_fit.csv` — CS210 fitted curve, point by point.
-- `*_first_frame_CS210_fit.png` — CS210 fitted curve plot.
+- `*_first_frame_Cheng-Schwartzman_fit.csv` — Cheng-Schwartzman fitted curve, point by point.
+- `*_first_frame_Cheng-Schwartzman_fit.png` — Cheng-Schwartzman fitted curve plot.
 - `*_spots.csv` — tracking result (frame, x, y, track_id, quality).
 
 **Batch output** (under `OpenNTA_Results_{timestamp}/size_{date}_{number}/`):
@@ -577,7 +577,7 @@ opennta/                                     # repository root
     │       ├── threshold_calculator.py      # automated thresholding
     │       ├── image_processor.py           # single-TIFF stack normalization
     │       ├── fitting.py                   # quality-histogram model fitting
-    │       ├── fitting_models.py            # CS210 / Poly2 / Gaussian model definitions
+    │       ├── fitting_models.py            # Cheng-Schwartzman / Poly2 / Gaussian model definitions
     │       ├── types.py                     # FitResult / ThresholdResult dataclasses
     │       └── scripts/                     # Jython scripts executed inside Fiji
     │           ├── tracking.py
