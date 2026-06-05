@@ -248,7 +248,7 @@ class _UIBuilderMixin:
         self.sb_mincount = self._make_int_spin(1, 500, 1)
         self.sb_niter = self._make_int_spin(1, 50, 2)
         self.sb_ksize = self._make_int_spin(1, 15, 5, step=2)
-        self.sb_sigma = self._make_double(0.1, 20.0, 1.0, step=0.1, decimals=2)
+        self.sb_sigma = self._make_double(0.01, 20.0, 1.0, step=0.05, decimals=2)
 
         def _add(row: int, col: int, text: str, widget: QWidget) -> None:
             label = QLabel(text)
