@@ -178,7 +178,7 @@ class _UIBuilderMixin:
 
         box = QGroupBox("Interpolation")
         box.setCheckable(True)
-        box.setChecked(False)
+        box.setChecked(True)
         box.setCursor(Qt.PointingHandCursor)
         self.chk_interp = box
 
@@ -198,7 +198,7 @@ class _UIBuilderMixin:
         self.le_nodes.setValidator(QIntValidator(2, 8192, self.le_nodes))
         self.le_nodes.setFixedHeight(self._FIELD_HEIGHT)
         self.le_nodes.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self.le_nodes.setText(str(self.sb_nwin.value()))
+        self.le_nodes.setText(str(self._last_interp_nodes))
 
         form.addRow("nodes", self.le_nodes)
         vbox.addWidget(form_wrap)
@@ -246,7 +246,7 @@ class _UIBuilderMixin:
         grid.setVerticalSpacing(5)
 
         self.sb_mincount = self._make_int_spin(1, 500, 1)
-        self.sb_niter = self._make_int_spin(1, 50, 2)
+        self.sb_niter = self._make_int_spin(1, 50, 1)
         self.sb_ksize = self._make_int_spin(1, 15, 5, step=2)
         self.sb_sigma = self._make_double(0.01, 20.0, 1.0, step=0.05, decimals=2)
 
@@ -347,7 +347,6 @@ class _UIBuilderMixin:
             accent=self._ACCENT,
             primary=True,
         )
-        self.btn_accept.setEnabled(False)
 
         self.btn_cancel = QPushButton("Cancel")
         self.btn_cancel.setFixedHeight(self._PRIMARY_BUTTON_HEIGHT)

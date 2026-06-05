@@ -49,8 +49,6 @@ class NumericalFieldDialog(
         return self.chk_export_csv.isChecked()
 
     def get_params(self) -> NumericalFieldParams | None:
-        if self.stats is None:
-            return None
 
         return NumericalFieldParams(
             n_windows=self.sb_nwin.value(),
@@ -92,7 +90,6 @@ class NumericalFieldDialog(
         self.smoothed_u = None
         self.smoothed_v = None
         self._use_smoothed = False
-        self.btn_accept.setEnabled(True)
         self._redraw()
 
     def _apply_smoothing(self) -> None:
@@ -119,6 +116,4 @@ class NumericalFieldDialog(
         self._redraw()
 
     def _accept_field(self) -> None:
-        if self.stats is None:
-            return
         self.accept()
