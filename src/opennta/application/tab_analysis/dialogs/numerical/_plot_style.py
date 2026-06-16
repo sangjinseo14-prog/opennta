@@ -114,13 +114,13 @@ def recolor_for_export(fig: Figure, color: str = "black") -> None:
 PLOT_SPECS = (
     ("Tracks on grid", None, ""),
     ("Mean velocity on grid", "viridis", "µm/s"),
-    (r"CI$_{95}$", "magma", "µm/s"),
+    ("Standard error", "magma", "µm/s"),
     ("Smoothed velocity-field", "viridis", "µm/s"),
 )
 
 TRACKS_INDEX = 0
 MEAN_INDEX = 1
-CI95_INDEX = 2
+SE_INDEX = 2
 SMOOTHED_INDEX = 3
 
 FS_TITLE = 13

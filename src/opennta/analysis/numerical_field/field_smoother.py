@@ -4,10 +4,10 @@ import numpy as np
 from numpy.typing import NDArray
 
 
-def ci95_weighted_gaussian_smooth(
+def se_weighted_gaussian_smooth(
     mean_dx: NDArray[np.floating],
     mean_dy: NDArray[np.floating],
-    ci95_vec: NDArray[np.floating],
+    se_vec: NDArray[np.floating],
     count: NDArray[np.floating],
     min_count: int = 5,
     eps: float = 1e-12,
@@ -15,15 +15,17 @@ def ci95_weighted_gaussian_smooth(
     n_iter: int = 2,
     sigma: float | None = None,
 ) -> tuple[NDArray[np.floating], NDArray[np.floating]]:
-    # CI-weighted Gaussian spatial smoothing.
+    # SE-weighted Gaussian spatial smoothing.
     #
     # At every iteration each cell is replaced by a weighted average of its
     # neighbours within a ksize x ksize window. Weight at offset (dj, di) is
-    #     G(dj, di) * 1 / (ci95^2 + eps)  for valid cells, else 0,
-    # where G is an isotropic 2D Gaussian of width sigma.
+    #     G(dj, di) * 1 / (se^2 + eps)  for valid cells, else 0,
+    # where G is an isotropic 2D Gaussian of width sigma and se is the standard
+    # error of the cell's mean velocity. Since se^2 is the variance of that
+    # mean, 1 / se^2 is inverse-variance (precision) weighting.
     #
     # Invalid cells (count < min_count, count < 2, non-finite or non-positive
-    # ci95) carry zero reliability weight and are filled in from valid
+    # se) carry zero reliability weight and are filled in from valid
     # neighbours (diffusion-like). Cells whose denominator is zero in a given
     # iteration (no valid neighbour inside the kernel) are left unchanged.
     #
@@ -45,11 +47,11 @@ def ci95_weighted_gaussian_smooth(
                           / (2.0 * sigma * sigma))
 
     pass_N = count >= int(min_count)
-    pass_CI = (count >= 2) & np.isfinite(ci95_vec) & (ci95_vec > 0)
-    pass_both = pass_N & pass_CI
+    pass_se = (count >= 2) & np.isfinite(se_vec) & (se_vec > 0)
+    pass_both = pass_N & pass_se
 
-    w = np.zeros_like(ci95_vec, dtype=float)
-    w[pass_both] = 1.0 / (ci95_vec[pass_both] ** 2 + eps)
+    w = np.zeros_like(se_vec, dtype=float)
+    w[pass_both] = 1.0 / (se_vec[pass_both] ** 2 + eps)
 
     u_cur = np.where(pass_both & np.isfinite(mean_dx), mean_dx, 0.0).astype(float)
     v_cur = np.where(pass_both & np.isfinite(mean_dy), mean_dy, 0.0).astype(float)
@@ -86,7 +88,7 @@ def ci95_weighted_gaussian_smooth(
                 u_nb = u_cur[src_r0:src_r1, src_c0:src_c1]
                 v_nb = v_cur[src_r0:src_r1, src_c0:src_c1]
 
-                contrib = g * w_nb  # Gaussian * inverse-CI^2 weight
+                contrib = g * w_nb  # Gaussian * inverse-variance (1/se^2) weight
                 num_u[dst_r0:dst_r1, dst_c0:dst_c1] += contrib * u_nb
                 num_v[dst_r0:dst_r1, dst_c0:dst_c1] += contrib * v_nb
                 den[dst_r0:dst_r1, dst_c0:dst_c1] += contrib

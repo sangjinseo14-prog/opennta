@@ -1,7 +1,7 @@
 """Numerical velocity field for spatially-varying drift correction."""
 
 from .field_sampler import FieldSampler
-from .field_smoother import ci95_weighted_gaussian_smooth
+from .field_smoother import se_weighted_gaussian_smooth
 from .field_stats import ComponentStats, component_stats
 from .node_field import NodeField, build_node_field
 from .numerical_corrector import NumericalCorrector, NumericalDiagnosticState
@@ -13,7 +13,7 @@ __all__ = [
     "FieldStats",
     "NumericalFieldParams",
     "compute_velocity_field",
-    "ci95_weighted_gaussian_smooth",
+    "se_weighted_gaussian_smooth",
     "ComponentStats",
     "component_stats",
     "FieldSampler",

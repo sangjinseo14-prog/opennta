@@ -9,7 +9,7 @@ import pandas as pd
 
 from ..drift_corrector import DriftCorrector, ExportField, register_corrector
 from .field_sampler import FieldSampler
-from .field_smoother import ci95_weighted_gaussian_smooth
+from .field_smoother import se_weighted_gaussian_smooth
 from .node_field import build_node_field
 from .types import FieldStats, NumericalFieldParams
 from .velocity_field import compute_velocity_field
@@ -138,10 +138,10 @@ class NumericalCorrector(DriftCorrector):
             outlier_k=p.outlier_k,
         )
 
-        u_sm, v_sm = ci95_weighted_gaussian_smooth(
+        u_sm, v_sm = se_weighted_gaussian_smooth(
             mean_dx=stats.mean_dx,
             mean_dy=stats.mean_dy,
-            ci95_vec=stats.ci95_vec,
+            se_vec=stats.se_vec,
             count=stats.count,
             min_count=p.min_count,
             ksize=p.ksize,

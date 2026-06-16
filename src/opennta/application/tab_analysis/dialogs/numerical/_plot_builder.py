@@ -34,8 +34,8 @@ class _PlotBuilderMixin:
         # Three-column layout:
         #   col 0 (2 rows): tracks
         #   col 1 row 0  : mean drift
-        #   col 1 row 1  : CI95
-        #   col 2 (2 rows): CI-weighted smoothed
+        #   col 1 row 1  : SE
+        #   col 2 (2 rows): SE-weighted smoothed
         gs = GridSpec(
             2,
             3,
@@ -87,7 +87,7 @@ class _PlotBuilderMixin:
         # Stored field is in um/frame; display in um/s via fps scaling.
         fps = float(self.config.fps)
         vbar = np.hypot(self.stats.mean_dx, self.stats.mean_dy) * fps
-        ci95_vec = self.stats.ci95_vec * fps
+        se_vec = self.stats.se_vec * fps
         vbar_smoothed = None
 
         if self._use_smoothed and self.smoothed_u is not None and self.smoothed_v is not None:
@@ -96,7 +96,7 @@ class _PlotBuilderMixin:
         return [
             (None, track_cmap, track_title, track_unit),
             (vbar, specs[1][1], specs[1][0], specs[1][2]),
-            (ci95_vec, specs[2][1], specs[2][0], specs[2][2]),
+            (se_vec, specs[2][1], specs[2][0], specs[2][2]),
             (vbar_smoothed, specs[3][1], specs[3][0], specs[3][2]),
         ]
 
