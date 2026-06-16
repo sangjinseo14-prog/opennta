@@ -83,7 +83,6 @@ def compute_velocity_field(
 
     sigma_vec = np.sqrt(std_dx ** 2 + std_dy ** 2)
     se_vec = sigma_vec / np.sqrt(np.where(ok1, count, np.nan))
-    ci95_vec = 1.96 * se_vec
 
     return FieldStats(
         n_windows=n,
@@ -95,7 +94,7 @@ def compute_velocity_field(
         std_dx=std_dx,
         std_dy=std_dy,
         sigma_vec=sigma_vec,
-        ci95_vec=ci95_vec,
+        se_vec=se_vec,
     )
 
 

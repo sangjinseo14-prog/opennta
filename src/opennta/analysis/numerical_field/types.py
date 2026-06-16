@@ -19,7 +19,7 @@ class FieldStats:
     std_dx: NDArray[np.floating]
     std_dy: NDArray[np.floating]
     sigma_vec: NDArray[np.floating]
-    ci95_vec: NDArray[np.floating]
+    se_vec: NDArray[np.floating]
 
 
 @dataclass

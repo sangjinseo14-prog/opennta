@@ -34,7 +34,7 @@ def save_numerical_diagnostics(
 
     # Stored field is in um/frame; display in um/s to match the dialog.
     vbar = np.hypot(stats.mean_dx, stats.mean_dy) * fps
-    ci95_vec = stats.ci95_vec * fps
+    se_vec = stats.se_vec * fps
     if u_sm is not None and v_sm is not None:
         vbar_sm = np.hypot(u_sm, v_sm) * fps
     else:
@@ -52,7 +52,7 @@ def save_numerical_diagnostics(
     specs = _ps.PLOT_SPECS
     ax_tracks = flat_axes[0]
     ax_mean = flat_axes[1]
-    ax_ci = flat_axes[2]
+    ax_se = flat_axes[2]
     ax_sm = flat_axes[3]
 
     _ps.style_panel_axes(ax_tracks, specs[_ps.TRACKS_INDEX][0])
@@ -73,11 +73,11 @@ def save_numerical_diagnostics(
     _ps.draw_quiver_overlay(ax_mean, stats.mean_dx, stats.mean_dy)
 
     _draw_field_panel(
-        fig, ax_ci,
-        data=ci95_vec,
-        cmap=specs[_ps.CI95_INDEX][1],
-        title=specs[_ps.CI95_INDEX][0],
-        unit=specs[_ps.CI95_INDEX][2],
+        fig, ax_se,
+        data=se_vec,
+        cmap=specs[_ps.SE_INDEX][1],
+        title=specs[_ps.SE_INDEX][0],
+        unit=specs[_ps.SE_INDEX][2],
     )
 
     if vbar_sm is not None:

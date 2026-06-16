@@ -332,7 +332,7 @@ class _UIBuilderMixin:
             self.le_nodes.setText(str(self.sb_nwin.value()))
 
     def _build_smoothing_group(self) -> QGroupBox:
-        box = QGroupBox("CI-weighted smoothing")
+        box = QGroupBox("SE-weighted smoothing")
 
         vbox = QVBoxLayout(box)
         vbox.setContentsMargins(10, 12, 10, 10)
@@ -375,7 +375,7 @@ class _UIBuilderMixin:
             "\">"
             "<span style=\"font-style:italic;\">w</span>(&#916;j, &#916;i)"
             " = <span style=\"font-style:italic;\">G</span>(&#916;j, &#916;i)"
-            " &middot; 1 / (CI<sub>95</sub><sup>2</sup> + &#949;)"
+            " &middot; 1 / (SE<sup>2</sup> + &#949;)"
             "<br>"
             "<span style=\"font-style:italic;\">G</span>(&#916;j, &#916;i)"
             " = exp&nbsp;[ - (&#916;j<sup>2</sup> + &#916;i<sup>2</sup>) / (2&#963;<sup>2</sup>) ]"

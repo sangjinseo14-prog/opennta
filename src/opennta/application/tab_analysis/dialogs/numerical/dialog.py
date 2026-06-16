@@ -4,7 +4,7 @@ import pandas as pd
 from PyQt5.QtWidgets import QDialog, QMessageBox
 
 from opennta.analysis.numerical_field.field_smoother import (
-    ci95_weighted_gaussian_smooth,
+    se_weighted_gaussian_smooth,
 )
 from opennta.analysis.numerical_field.field_stats import component_stats
 from opennta.analysis.numerical_field.types import (
@@ -112,10 +112,10 @@ class NumericalFieldDialog(
             return
 
         try:
-            self.smoothed_u, self.smoothed_v = ci95_weighted_gaussian_smooth(
+            self.smoothed_u, self.smoothed_v = se_weighted_gaussian_smooth(
                 mean_dx=self.stats.mean_dx,
                 mean_dy=self.stats.mean_dy,
-                ci95_vec=self.stats.ci95_vec,
+                se_vec=self.stats.se_vec,
                 count=self.stats.count,
                 min_count=self.sb_mincount.value(),
                 ksize=self.sb_ksize.value(),
