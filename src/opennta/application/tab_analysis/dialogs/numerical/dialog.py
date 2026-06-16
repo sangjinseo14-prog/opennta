@@ -95,9 +95,8 @@ class NumericalFieldDialog(
         self._redraw()
 
     def _update_uv_stats(self) -> None:
-        # Summarise the freshly computed mean field for the readout under the
-        # "Compute field" button. Stored values are um/frame; scale by fps so
-        # the numbers match the µm/s colorbars on the velocity panels.
+        # Stored values are um/frame; scale by fps so the readout matches the
+        # µm/s colorbars on the velocity panels.
         if self.stats is None:
             self._clear_uv_stats()
             return

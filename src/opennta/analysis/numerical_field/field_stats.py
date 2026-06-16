@@ -19,12 +19,11 @@ class ComponentStats:
 
 
 def component_stats(values: NDArray[np.floating]) -> ComponentStats | None:
-    """Summarise the finite entries of ``values``.
+    """min/max/mean/sd over the finite entries of ``values``.
 
-    Empty grid cells are stored as NaN, so the summary is taken over the finite
-    entries only. Returns ``None`` when nothing finite is present (an uncomputed
-    or fully empty field) so callers can render a placeholder instead of NaNs.
-    The standard deviation is the population sd (``ddof=0``) of the cell values.
+    Empty grid cells are NaN, so non-finite entries are dropped; an all-NaN or
+    empty field yields ``None`` so callers can show a placeholder instead of
+    NaNs. ``std`` is the population sd (``ddof=0``).
     """
     arr = np.asarray(values, dtype=float)
     finite = arr[np.isfinite(arr)]
