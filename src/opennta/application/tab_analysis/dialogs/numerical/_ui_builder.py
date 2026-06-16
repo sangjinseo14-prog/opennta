@@ -177,6 +177,12 @@ class _UIBuilderMixin:
     # Order shown left to right; max-min is the range (max - min).
     _UV_STATS_COLUMNS = ("max", "min", "max-min", "mean", "sd")
 
+    # Fixed column widths (label + 5 data columns = 100%) so the empty dash
+    # table and the populated one share one layout; values then drop into the
+    # same columns instead of resizing them and sliding the header text.
+    _UV_STATS_LABEL_COL_WIDTH = "15%"
+    _UV_STATS_DATA_COL_WIDTH = "17%"
+
     # u, v are the x/y velocity components; subscripts match the plot labels.
     _UV_STATS_LABEL_U = "u<sub>x</sub>"
     _UV_STATS_LABEL_V = "u<sub>y</sub>"
@@ -204,10 +210,17 @@ class _UIBuilderMixin:
         title = f"{self._UV_STATS_LABEL_U}, {self._UV_STATS_LABEL_V} statistics"
         if unit:
             title += f" ({unit})"
+        # font-weight:normal drops the default bold <th> face so the header
+        # row matches the un-bolded row labels and title.
         header_cells = "".join(
-            f"<th align='right'>{col}</th>" for col in self._UV_STATS_COLUMNS
+            f"<th align='right' width='{self._UV_STATS_DATA_COL_WIDTH}' "
+            f"style='font-weight:normal;'>{col}</th>"
+            for col in self._UV_STATS_COLUMNS
         )
-        header = f"<tr><th align='left'>&nbsp;</th>{header_cells}</tr>"
+        header = (
+            f"<tr><th align='left' width='{self._UV_STATS_LABEL_COL_WIDTH}' "
+            f"style='font-weight:normal;'>&nbsp;</th>{header_cells}</tr>"
+        )
         body = (
             self._uv_stats_row(self._UV_STATS_LABEL_U, u_stats)
             + self._uv_stats_row(self._UV_STATS_LABEL_V, v_stats)
@@ -222,15 +235,21 @@ class _UIBuilderMixin:
 
     @classmethod
     def _uv_stats_row(cls, name: str, stats) -> str:
+        label = f"<td align='left' width='{cls._UV_STATS_LABEL_COL_WIDTH}'>{name}</td>"
+        width = cls._UV_STATS_DATA_COL_WIDTH
         if stats is None:
-            span = len(cls._UV_STATS_COLUMNS)
-            return (
-                f"<tr><td>{name}</td>"
-                f"<td align='center' colspan='{span}'>&mdash;</td></tr>"
+            # One right-aligned dash per column (not a single centered span) so
+            # the placeholder lines up with the values that later replace it.
+            cells = "".join(
+                f"<td align='right' width='{width}'>&mdash;</td>"
+                for _ in cls._UV_STATS_COLUMNS
             )
+            return f"<tr>{label}{cells}</tr>"
         values = (stats.max, stats.min, stats.max - stats.min, stats.mean, stats.std)
-        cells = "".join(f"<td align='right'>{v:.4g}</td>" for v in values)
-        return f"<tr><td>{name}</td>{cells}</tr>"
+        cells = "".join(
+            f"<td align='right' width='{width}'>{v:.4g}</td>" for v in values
+        )
+        return f"<tr>{label}{cells}</tr>"
 
     def _build_interp_group(self) -> QGroupBox:
         self._last_interp_nodes = self._INTERP_DEFAULT_NODES
