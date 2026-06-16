@@ -41,6 +41,7 @@ class NumericalFieldDialog(
 
         self._build_ui()
         self.setFont(get_app_font())
+        self._reserve_uv_stats_height()
         self._init_plot_slots()
 
         self.canvas.mpl_connect("resize_event", self._on_canvas_resize)
@@ -103,7 +104,7 @@ class NumericalFieldDialog(
         fps = float(self.config.fps)
         u_stats = component_stats(self.stats.mean_dx * fps)
         v_stats = component_stats(self.stats.mean_dy * fps)
-        self._set_uv_stats(u_stats, v_stats, unit="µm/s")
+        self._set_uv_stats(u_stats, v_stats, unit=self._UV_STATS_UNIT)
 
     def _apply_smoothing(self) -> None:
         if self.stats is None:
