@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QDialog, QMessageBox
 from opennta.analysis.numerical_field.field_smoother import (
     ci95_weighted_gaussian_smooth,
 )
+from opennta.analysis.numerical_field.field_stats import component_stats
 from opennta.analysis.numerical_field.types import (
     FieldStats,
     NumericalFieldParams,
@@ -90,7 +91,19 @@ class NumericalFieldDialog(
         self.smoothed_u = None
         self.smoothed_v = None
         self._use_smoothed = False
+        self._update_uv_stats()
         self._redraw()
+
+    def _update_uv_stats(self) -> None:
+        # Stored values are um/frame; scale by fps so the readout matches the
+        # µm/s colorbars on the velocity panels.
+        if self.stats is None:
+            self._clear_uv_stats()
+            return
+        fps = float(self.config.fps)
+        u_stats = component_stats(self.stats.mean_dx * fps)
+        v_stats = component_stats(self.stats.mean_dy * fps)
+        self._set_uv_stats(u_stats, v_stats, unit="µm/s")
 
     def _apply_smoothing(self) -> None:
         if self.stats is None:
