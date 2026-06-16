@@ -187,6 +187,10 @@ class _UIBuilderMixin:
     _UV_STATS_LABEL_U = "u<sub>x</sub>"
     _UV_STATS_LABEL_V = "u<sub>y</sub>"
 
+    # Shown in the title in every state (placeholder and populated) so the unit
+    # is always visible and the title length never changes when values arrive.
+    _UV_STATS_UNIT = "µm/s"
+
     def _build_uv_stats_label(self) -> QLabel:
         lbl = QLabel()
         lbl.setTextFormat(Qt.RichText)
@@ -199,9 +203,23 @@ class _UIBuilderMixin:
         return lbl
 
     def _clear_uv_stats(self) -> None:
-        # Same table as the populated state but with dash cells, so the
-        # reserved height matches and nothing jumps once values arrive.
-        self.lbl_uv_stats.setText(self._format_uv_stats_html(None, None, ""))
+        # Same table as the populated state -- same title (with unit) and same
+        # row count -- but with placeholder cells, so the reserved height
+        # matches and nothing jumps once values arrive.
+        self.lbl_uv_stats.setText(
+            self._format_uv_stats_html(None, None, self._UV_STATS_UNIT)
+        )
+
+    def _reserve_uv_stats_height(self) -> None:
+        # Lock the stats box to the height of the placeholder table so that
+        # "Compute field" only swaps dashes for values and never grows the box,
+        # which would push the controls below it down. Measured at the panel's
+        # minimum width (where text wraps the most) so the reservation still
+        # holds when the window is dragged narrow. Call once after fonts are
+        # set, while the placeholder is showing.
+        height = self.lbl_uv_stats.heightForWidth(self._LEFT_MIN_W)
+        if height > 0:
+            self.lbl_uv_stats.setFixedHeight(height)
 
     def _set_uv_stats(self, u_stats, v_stats, unit: str = "") -> None:
         self.lbl_uv_stats.setText(self._format_uv_stats_html(u_stats, v_stats, unit))
@@ -239,9 +257,12 @@ class _UIBuilderMixin:
         width = cls._UV_STATS_DATA_COL_WIDTH
         if stats is None:
             # One right-aligned dash per column (not a single centered span) so
-            # the placeholder lines up with the values that later replace it.
+            # the placeholder reserves the same width and height as the values
+            # that later replace it. Rendered transparent so the table reads as
+            # blank cells until "Compute field" fills them in.
             cells = "".join(
-                f"<td align='right' width='{width}'>&mdash;</td>"
+                f"<td align='right' width='{width}' style='color:transparent;'>"
+                f"&mdash;</td>"
                 for _ in cls._UV_STATS_COLUMNS
             )
             return f"<tr>{label}{cells}</tr>"
