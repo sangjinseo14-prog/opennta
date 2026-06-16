@@ -174,54 +174,63 @@ class _UIBuilderMixin:
 
         return box, form
 
+    # Order shown left to right; max-min is the range (max - min).
+    _UV_STATS_COLUMNS = ("max", "min", "max-min", "mean", "sd")
+
+    # u, v are the x/y velocity components; subscripts match the plot labels.
+    _UV_STATS_LABEL_U = "u<sub>x</sub>"
+    _UV_STATS_LABEL_V = "u<sub>y</sub>"
+
     def _build_uv_stats_label(self) -> QLabel:
         lbl = QLabel()
         lbl.setTextFormat(Qt.RichText)
         lbl.setWordWrap(True)
         lbl.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.lbl_uv_stats = lbl
+        # Render the empty table now so the panel reserves the stats space up
+        # front; "Compute field" then fills the cells without shifting layout.
         self._clear_uv_stats()
         return lbl
 
     def _clear_uv_stats(self) -> None:
-        self.lbl_uv_stats.setText(
-            f"<span style='color:{_ps.FG_MUTED}; font-size:10px;'>"
-            "Compute the field to see u, v statistics."
-            "</span>"
-        )
+        # Same table as the populated state but with dash cells, so the
+        # reserved height matches and nothing jumps once values arrive.
+        self.lbl_uv_stats.setText(self._format_uv_stats_html(None, None, ""))
 
     def _set_uv_stats(self, u_stats, v_stats, unit: str = "") -> None:
         self.lbl_uv_stats.setText(self._format_uv_stats_html(u_stats, v_stats, unit))
 
     def _format_uv_stats_html(self, u_stats, v_stats, unit: str) -> str:
-        title = "u, v statistics" + (f" ({unit})" if unit else "")
-        header = (
-            "<tr>"
-            "<th align='left'>&nbsp;</th>"
-            "<th align='right'>min</th>"
-            "<th align='right'>max</th>"
-            "<th align='right'>mean</th>"
-            "<th align='right'>sd</th>"
-            "</tr>"
+        title = f"{self._UV_STATS_LABEL_U}, {self._UV_STATS_LABEL_V} statistics"
+        if unit:
+            title += f" ({unit})"
+        header_cells = "".join(
+            f"<th align='right'>{col}</th>" for col in self._UV_STATS_COLUMNS
         )
-        body = self._uv_stats_row("u", u_stats) + self._uv_stats_row("v", v_stats)
+        header = f"<tr><th align='left'>&nbsp;</th>{header_cells}</tr>"
+        body = (
+            self._uv_stats_row(self._UV_STATS_LABEL_U, u_stats)
+            + self._uv_stats_row(self._UV_STATS_LABEL_V, v_stats)
+        )
+        # 11px matches the other left-panel labels; family is inherited.
         return (
-            f"<div style='color:{_ps.FG_MUTED}; font-size:10px;'>{title}</div>"
+            f"<div style='color:{_ps.FG_MUTED}; font-size:11px;'>{title}</div>"
             "<table width='100%' cellspacing='0' cellpadding='2' "
             "style='font-size:11px;'>"
             f"{header}{body}</table>"
         )
 
-    @staticmethod
-    def _uv_stats_row(name: str, stats) -> str:
+    @classmethod
+    def _uv_stats_row(cls, name: str, stats) -> str:
         if stats is None:
+            span = len(cls._UV_STATS_COLUMNS)
             return (
-                f"<tr><td><b>{name}</b></td>"
-                "<td align='center' colspan='4'>&mdash;</td></tr>"
+                f"<tr><td>{name}</td>"
+                f"<td align='center' colspan='{span}'>&mdash;</td></tr>"
             )
-        values = (stats.min, stats.max, stats.mean, stats.std)
+        values = (stats.max, stats.min, stats.max - stats.min, stats.mean, stats.std)
         cells = "".join(f"<td align='right'>{v:.4g}</td>" for v in values)
-        return f"<tr><td><b>{name}</b></td>{cells}</tr>"
+        return f"<tr><td>{name}</td>{cells}</tr>"
 
     def _build_interp_group(self) -> QGroupBox:
         self._last_interp_nodes = self._INTERP_DEFAULT_NODES
