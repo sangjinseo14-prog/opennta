@@ -266,10 +266,6 @@ class _UIBuilderMixin:
         return f"<tr>{label}{cells}</tr>"
 
     def _build_interp_controls(self) -> QWidget:
-        # Frameless inline control (no QGroupBox): a plain "Interpolation"
-        # checkbox above the nodes field. Dropping the box keeps the narrow
-        # left column compact, matching the field panel that shed its stats
-        # title/unit, while the checkbox preserves the old group-box toggle.
         self._last_interp_nodes = self._INTERP_DEFAULT_NODES
 
         wrap = QWidget()
@@ -299,9 +295,6 @@ class _UIBuilderMixin:
         form.addRow("nodes", self.le_nodes)
         vbox.addWidget(form_wrap)
 
-        # Connect after setChecked so the initial state doesn't fire the toggle
-        # handler before le_nodes exists; checked=True already matches the
-        # field's default enabled state.
         self.chk_interp.toggled.connect(self._on_interp_toggled)
         self.le_nodes.textEdited.connect(self._on_nodes_edited)
 
