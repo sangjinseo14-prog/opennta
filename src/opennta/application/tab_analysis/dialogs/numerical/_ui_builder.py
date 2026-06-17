@@ -103,13 +103,13 @@ class _UIBuilderMixin:
         col.setSpacing(8)
 
         params_box, _ = self._build_field_group()
-        interp_box = self._build_interp_group()
+        interp_controls = self._build_interp_controls()
         smooth_box = self._build_smoothing_group()
 
         col.addWidget(params_box)
         col.addWidget(smooth_box)
         col.addWidget(self._build_vectors_button())
-        col.addWidget(interp_box)
+        col.addWidget(interp_controls)
         col.addStretch(1)
 
         col.addWidget(self._build_export_checkbox())
@@ -265,18 +265,18 @@ class _UIBuilderMixin:
         )
         return f"<tr>{label}{cells}</tr>"
 
-    def _build_interp_group(self) -> QGroupBox:
+    def _build_interp_controls(self) -> QWidget:
         self._last_interp_nodes = self._INTERP_DEFAULT_NODES
 
-        box = QGroupBox("Interpolation")
-        box.setCheckable(True)
-        box.setChecked(True)
-        box.setCursor(Qt.PointingHandCursor)
-        self.chk_interp = box
-
-        vbox = QVBoxLayout(box)
-        vbox.setContentsMargins(10, 12, 10, 10)
+        wrap = QWidget()
+        vbox = QVBoxLayout(wrap)
+        vbox.setContentsMargins(0, 0, 0, 0)
         vbox.setSpacing(6)
+
+        self.chk_interp = QCheckBox("Interpolation")
+        self.chk_interp.setChecked(True)
+        self.chk_interp.setCursor(Qt.PointingHandCursor)
+        vbox.addWidget(self.chk_interp)
 
         form_wrap = QWidget()
         form = QFormLayout(form_wrap)
@@ -295,10 +295,10 @@ class _UIBuilderMixin:
         form.addRow("nodes", self.le_nodes)
         vbox.addWidget(form_wrap)
 
-        box.toggled.connect(self._on_interp_toggled)
+        self.chk_interp.toggled.connect(self._on_interp_toggled)
         self.le_nodes.textEdited.connect(self._on_nodes_edited)
 
-        return box
+        return wrap
 
     def _on_grid_param_changed(self, *_args) -> None:
         self._sync_node_default()
