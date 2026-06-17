@@ -204,6 +204,12 @@ class _UIBuilderMixin:
         # once values arrive.
         self.lbl_uv_stats.setText(self._format_uv_stats_html(None, None))
 
+    # Subscripts (the "y" in u_y) dip below the rich-text baseline, but
+    # QLabel.heightForWidth measures from that baseline and does not count the
+    # descender, so the bottom row's tail is clipped by the fixed height. Pad
+    # the reservation by a few pixels to keep that glyph fully visible.
+    _UV_STATS_HEIGHT_PAD = 4
+
     def _reserve_uv_stats_height(self) -> None:
         # Lock the stats box to the height of the placeholder table so that
         # "Compute field" only swaps dashes for values and never grows the box,
@@ -213,7 +219,7 @@ class _UIBuilderMixin:
         # set, while the placeholder is showing.
         height = self.lbl_uv_stats.heightForWidth(self._LEFT_MIN_W)
         if height > 0:
-            self.lbl_uv_stats.setFixedHeight(height)
+            self.lbl_uv_stats.setFixedHeight(height + self._UV_STATS_HEIGHT_PAD)
 
     def _set_uv_stats(self, u_stats, v_stats) -> None:
         self.lbl_uv_stats.setText(self._format_uv_stats_html(u_stats, v_stats))
@@ -269,22 +275,16 @@ class _UIBuilderMixin:
         self._last_interp_nodes = self._INTERP_DEFAULT_NODES
 
         wrap = QWidget()
-        vbox = QVBoxLayout(wrap)
-        vbox.setContentsMargins(0, 0, 0, 0)
-        vbox.setSpacing(6)
+        row = QHBoxLayout(wrap)
+        row.setContentsMargins(0, 0, 0, 0)
+        row.setSpacing(0)
 
         self.chk_interp = QCheckBox("Interpolation")
         self.chk_interp.setChecked(True)
         self.chk_interp.setCursor(Qt.PointingHandCursor)
-        vbox.addWidget(self.chk_interp)
 
-        form_wrap = QWidget()
-        form = QFormLayout(form_wrap)
-        form.setContentsMargins(0, 0, 0, 0)
-        form.setHorizontalSpacing(8)
-        form.setVerticalSpacing(6)
-        form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        form.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
+        nodes_label = QLabel("nodes")
+        nodes_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
 
         self.le_nodes = QLineEdit()
         self.le_nodes.setValidator(QIntValidator(2, 8192, self.le_nodes))
@@ -292,8 +292,15 @@ class _UIBuilderMixin:
         self.le_nodes.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.le_nodes.setText(str(self._last_interp_nodes))
 
-        form.addRow("nodes", self.le_nodes)
-        vbox.addWidget(form_wrap)
+        # Single row: the "Interpolation" toggle on the left, the node count on
+        # the right. The field expands to fill the panel width like the inputs
+        # above it; the wider gap groups "nodes" with its field rather than the
+        # checkbox.
+        row.addWidget(self.chk_interp)
+        row.addSpacing(16)
+        row.addWidget(nodes_label)
+        row.addSpacing(8)
+        row.addWidget(self.le_nodes, 1)
 
         self.chk_interp.toggled.connect(self._on_interp_toggled)
         self.le_nodes.textEdited.connect(self._on_nodes_edited)
