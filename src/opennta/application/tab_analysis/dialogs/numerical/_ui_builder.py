@@ -187,10 +187,6 @@ class _UIBuilderMixin:
     _UV_STATS_LABEL_U = "u<sub>x</sub>"
     _UV_STATS_LABEL_V = "u<sub>y</sub>"
 
-    # Shown in the table corner in every state (placeholder and populated) so
-    # the unit stays visible and the layout never changes when values arrive.
-    _UV_STATS_UNIT = "µm/s"
-
     def _build_uv_stats_label(self) -> QLabel:
         lbl = QLabel()
         lbl.setTextFormat(Qt.RichText)
@@ -203,12 +199,10 @@ class _UIBuilderMixin:
         return lbl
 
     def _clear_uv_stats(self) -> None:
-        # Same table as the populated state -- same corner unit and row count --
-        # but with placeholder cells, so the reserved height matches and nothing
-        # jumps once values arrive.
-        self.lbl_uv_stats.setText(
-            self._format_uv_stats_html(None, None, self._UV_STATS_UNIT)
-        )
+        # Same table as the populated state -- same row count -- but with
+        # placeholder cells, so the reserved height matches and nothing jumps
+        # once values arrive.
+        self.lbl_uv_stats.setText(self._format_uv_stats_html(None, None))
 
     def _reserve_uv_stats_height(self) -> None:
         # Lock the stats box to the height of the placeholder table so that
@@ -221,15 +215,13 @@ class _UIBuilderMixin:
         if height > 0:
             self.lbl_uv_stats.setFixedHeight(height)
 
-    def _set_uv_stats(self, u_stats, v_stats, unit: str = "") -> None:
-        self.lbl_uv_stats.setText(self._format_uv_stats_html(u_stats, v_stats, unit))
+    def _set_uv_stats(self, u_stats, v_stats) -> None:
+        self.lbl_uv_stats.setText(self._format_uv_stats_html(u_stats, v_stats))
 
-    def _format_uv_stats_html(self, u_stats, v_stats, unit: str) -> str:
-        # The unit lives in the otherwise-empty corner cell rather than a title
-        # line above the table: the "u_x, u_y statistics (unit)" title was long
-        # enough to wrap and clip inside the narrow left panel, and the row
-        # labels already name the components, so only the unit is worth keeping.
-        corner = unit if unit else "&nbsp;"
+    def _format_uv_stats_html(self, u_stats, v_stats) -> str:
+        # No title row and an empty corner cell keep the panel compact in the
+        # narrow left column: the row labels already name the u_x/u_y components
+        # and the column headers are self-evident.
         # font-weight:normal drops the default bold <th> face so the header
         # row matches the un-bolded row labels.
         header_cells = "".join(
@@ -239,8 +231,7 @@ class _UIBuilderMixin:
         )
         header = (
             f"<tr><th align='left' width='{self._UV_STATS_LABEL_COL_WIDTH}' "
-            f"style='font-weight:normal; color:{_ps.FG_MUTED};'>{corner}</th>"
-            f"{header_cells}</tr>"
+            f"style='font-weight:normal;'>&nbsp;</th>{header_cells}</tr>"
         )
         body = (
             self._uv_stats_row(self._UV_STATS_LABEL_U, u_stats)

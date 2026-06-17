@@ -104,7 +104,7 @@ class NumericalFieldDialog(
         fps = float(self.config.fps)
         u_stats = component_stats(self.stats.mean_dx * fps)
         v_stats = component_stats(self.stats.mean_dy * fps)
-        self._set_uv_stats(u_stats, v_stats, unit=self._UV_STATS_UNIT)
+        self._set_uv_stats(u_stats, v_stats)
 
     def _apply_smoothing(self) -> None:
         if self.stats is None:
