@@ -17,6 +17,7 @@ from .types import FitResult, ThresholdResult
 
 ModelType = Any
 logger = logging.getLogger(__name__)
+FIT_CURVE_X_STEP = 0.1
 
 
 class FittingEngine:
@@ -203,7 +204,21 @@ class FittingEngine:
         xlo = float(np.quantile(u, 0.01))
         xmed = float(np.median(u))
         xhi = float(xmed + 3 * (xmed - xlo))
-        grid = np.linspace(xlo, xhi, 500)
+        # A fixed point count made the exported x spacing depend on each
+        # dataset's quality range.  In narrow ranges those densely packed
+        # values can also look duplicated after spreadsheet/display rounding.
+        # Anchor the samples to decimal tenths so the CSV has one unambiguous
+        # point per x value and a consistent resolution across datasets.
+        grid_start = np.ceil(xlo / FIT_CURVE_X_STEP) * FIT_CURVE_X_STEP
+        grid_stop = np.floor(xhi / FIT_CURVE_X_STEP) * FIT_CURVE_X_STEP
+        grid = np.arange(
+            grid_start,
+            grid_stop + FIT_CURVE_X_STEP / 2,
+            FIT_CURVE_X_STEP,
+        )
+        if grid.size == 0:
+            grid = np.array([grid_start])
+        grid = np.round(grid, decimals=10)
         dens = self.model.pdf_untruncated(grid, **params)
 
         n_total = int(u.size)
