@@ -74,3 +74,19 @@ def test_solve_threshold_returns_nan_on_unbracketable_root():
     # sign for a large alpha, so brentq cannot bracket → graceful NaN.
     out = engine.solve_threshold_for_tail_prob(0.9, 80.0, 100.0, **params)
     assert np.isnan(out)
+
+
+def test_exported_fit_csv_uses_unique_decimal_tenths(tmp_path):
+    values, *_ = _synth.quality_samples(seed=4)
+    engine = FittingEngine("Gaussian")
+    result = engine.calculate_threshold(
+        values,
+        alpha=1e-4,
+        quality_csv_path=str(tmp_path / "frame_quality.csv"),
+    )
+    exported = np.loadtxt(result.fit_csv_path, delimiter=",")
+    grid = exported[:, 0]
+
+    assert np.unique(grid).size == grid.size
+    assert np.diff(grid) == pytest.approx(0.1)
+    assert grid * 10 == pytest.approx(np.round(grid * 10))
