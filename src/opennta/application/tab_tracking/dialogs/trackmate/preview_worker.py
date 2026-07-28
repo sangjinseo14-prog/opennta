@@ -141,7 +141,12 @@ class TrackMatePreviewWorker(QThread):
             spots_x = df[xcol].to_numpy(dtype=float)
             spots_y = df[ycol].to_numpy(dtype=float)
 
-            self._emit_log(f"Preview: fitting noise distribution ({self.params.quality_model})")
+            if self.params.quality_model == "No Fitting (FRAC)":
+                self._emit_log("Preview: using the empirical FRAC quantile")
+            else:
+                self._emit_log(
+                    f"Preview: fitting noise distribution ({self.params.quality_model})"
+                )
             engine = FittingEngine(self.params.quality_model)
             fit_result = engine.calculate_threshold(
                 u=qualities,
@@ -152,7 +157,11 @@ class TrackMatePreviewWorker(QThread):
 
             grid = None
             density = None
-            if fit_result.converged and np.isfinite(fit_result.u_star_alpha):
+            if (
+                not engine.uses_empirical_frac
+                and fit_result.converged
+                and np.isfinite(fit_result.u_star_alpha)
+            ):
                 xlo = float(np.quantile(qualities, 0.01))
                 xmed = float(np.median(qualities))
                 xhi = float(xmed + 3 * (xmed - xlo))

@@ -292,7 +292,20 @@ class GaussianModel:
         return params["sigma"] > 0
 
 
+class NoFittingFracModel:
+    """Marker model that uses the empirical FRAC quantile as the threshold."""
+
+    model_name = "No Fitting (FRAC)"
+    default_frac = 0.85
+    uses_empirical_frac = True
+
+    @property
+    def param_names(self) -> list[str]:
+        return []
+
+
 MODEL_CLASSES = {
+    "No Fitting (FRAC)": NoFittingFracModel,
     "Cheng-Schwartzman": ChengSchwartzmanModel,
     "Poly2": Poly2Model,
     "Gaussian": GaussianModel,
@@ -304,4 +317,3 @@ def get_model_class(name: str):
         available = ", ".join(MODEL_CLASSES.keys())
         raise ValueError(f"Unknown model: {name}. Available: {available}")
     return MODEL_CLASSES[name]
-

@@ -50,6 +50,29 @@ def test_calculate_threshold_separates_bulk_from_spike(model_name):
     assert result.n_ge_thresh + result.n_lt_thresh == result.n_total
 
 
+def test_no_fitting_frac_uses_empirical_quantile_as_threshold():
+    values = np.arange(1.0, 101.0)
+    engine = FittingEngine("No Fitting (FRAC)")
+
+    result = engine.calculate_threshold(values, frac=0.85, alpha=1e-4)
+
+    assert result.ok and result.converged
+    assert result.params == {}
+    assert result.u_star_alpha == pytest.approx(np.quantile(values, 0.85))
+    assert result.u_cut_fit_range == result.u_star_alpha
+    assert result.n_ge_thresh == 15
+    assert result.n_lt_thresh == 85
+    assert result.plot_path is None
+    assert result.fit_csv_path is None
+
+
+def test_no_fitting_frac_rejects_out_of_range_fraction():
+    engine = FittingEngine("No Fitting (FRAC)")
+
+    with pytest.raises(ValueError, match="FRAC must be between 0 and 1"):
+        engine.calculate_threshold(np.arange(10.0), frac=1.1, alpha=0.05)
+
+
 def test_neg_log_likelihood_rejects_invalid_sigma():
     values, *_ = _synth.quality_samples(seed=3)
     engine = FittingEngine("Gaussian")
