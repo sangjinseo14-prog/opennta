@@ -37,6 +37,10 @@ class FittingEngine:
     def param_names(self) -> list[str]:
         return self.model.param_names
 
+    @property
+    def uses_empirical_frac(self) -> bool:
+        return bool(getattr(self.model, "uses_empirical_frac", False))
+
     def _params_to_dict(self, params_array: NDArray[np.floating]) -> dict[str, float]:
         return {name: float(val) for name, val in zip(self.param_names, params_array, strict=False)}
 
@@ -145,6 +149,9 @@ class FittingEngine:
         frac: float | None = None,
         quality_csv_path: str | None = None,
     ) -> ThresholdResult:
+        if self.uses_empirical_frac:
+            return self._calculate_empirical_frac_threshold(u, frac, alpha)
+
         fit_result = self.fit(u, frac)
         params = fit_result.params
 
@@ -189,6 +196,40 @@ class FittingEngine:
             n_total=n_total,
             n_ge_thresh=n_hi,
             n_lt_thresh=n_lo,
+            model_name=self.model_name,
+        )
+
+    def _calculate_empirical_frac_threshold(
+        self,
+        u: NDArray[np.floating],
+        frac: float | None,
+        alpha: float,
+    ) -> ThresholdResult:
+        """Use the requested empirical quantile directly, without fitting."""
+        values = np.asarray(u, dtype=float)
+        values = values[np.isfinite(values)]
+        if values.size == 0:
+            raise ValueError("No finite quality values available")
+
+        quantile = self.model.default_frac if frac is None else float(frac)
+        if not 0.0 <= quantile <= 1.0:
+            raise ValueError(f"FRAC must be between 0 and 1, got {quantile}")
+
+        threshold = float(np.quantile(values, quantile))
+        n_hi = int(np.sum(values >= threshold))
+        n_total = int(values.size)
+        return ThresholdResult(
+            ok=True,
+            converged=True,
+            params={},
+            u_cut_fit_range=threshold,
+            u_star_alpha=threshold,
+            alpha=alpha,
+            plot_path=None,
+            fit_csv_path=None,
+            n_total=n_total,
+            n_ge_thresh=n_hi,
+            n_lt_thresh=n_total - n_hi,
             model_name=self.model_name,
         )
 
