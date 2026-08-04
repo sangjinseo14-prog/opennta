@@ -19,7 +19,10 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from opennta.analysis.numerical_field.velocity_field import compute_velocity_field
+from opennta.analysis.numerical_field.velocity_field import (
+    component_extrema,
+    compute_velocity_field,
+)
 
 
 def _single_window_df(good_dx, good_dy, *, outlier_dx, outlier_dy, n_outlier):
@@ -57,3 +60,21 @@ def test_mad_outlier_rejection_protects_window_mean():
     contaminated = compute_velocity_field(df, outlier_k=1e9, **grid)
     assert contaminated.mean_dx[0, 0] == pytest.approx((20 * 1.0 + 2 * 100.0) / 22)
     assert contaminated.mean_dy[0, 0] == pytest.approx((20 * 2.0 + 2 * -100.0) / 22)
+
+
+def test_component_extrema_ignores_empty_windows_and_preserves_sign():
+    values = np.array([[np.nan, -1.5], [0.25, 2.0]])
+
+    extrema = component_extrema(values, scale=4.0)
+
+    assert extrema.minimum == pytest.approx(-6.0)
+    assert extrema.maximum == pytest.approx(8.0)
+    assert extrema.span == pytest.approx(14.0)
+
+
+def test_component_extrema_returns_nan_for_an_empty_field():
+    extrema = component_extrema(np.full((2, 2), np.nan), scale=25.0)
+
+    assert np.isnan(extrema.minimum)
+    assert np.isnan(extrema.maximum)
+    assert np.isnan(extrema.span)

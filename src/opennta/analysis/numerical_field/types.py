@@ -22,6 +22,15 @@ class FieldStats:
     ci95_vec: NDArray[np.floating]
 
 
+@dataclass(frozen=True)
+class ComponentExtrema:
+    """Finite extrema for one component of a gridded velocity field."""
+
+    minimum: float
+    maximum: float
+    span: float
+
+
 @dataclass
 class NumericalFieldParams:
     # Captured from the dialog once and reused across batch files.
@@ -43,4 +52,4 @@ class NumericalFieldParams:
         return int(self.n_windows)
 
 
-__all__ = ["FieldStats", "NumericalFieldParams"]
+__all__ = ["ComponentExtrema", "FieldStats", "NumericalFieldParams"]

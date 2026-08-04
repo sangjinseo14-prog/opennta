@@ -10,7 +10,10 @@ from opennta.analysis.numerical_field.types import (
     FieldStats,
     NumericalFieldParams,
 )
-from opennta.analysis.numerical_field.velocity_field import compute_velocity_field
+from opennta.analysis.numerical_field.velocity_field import (
+    component_extrema,
+    compute_velocity_field,
+)
 
 from ....common.fonts import get_app_font
 from ._plot_builder import _PlotBuilderMixin
@@ -90,7 +93,22 @@ class NumericalFieldDialog(
         self.smoothed_u = None
         self.smoothed_v = None
         self._use_smoothed = False
+        self._refresh_component_statistics()
         self._redraw()
+
+    def _refresh_component_statistics(self) -> None:
+        for component, values in self.lbl_component_stats.items():
+            if self.stats is None:
+                texts = ("—", "—", "—")
+            else:
+                field = self.stats.mean_dx if component == "x" else self.stats.mean_dy
+                extrema = component_extrema(field, scale=float(self.config.fps))
+                texts = tuple(
+                    "—" if pd.isna(value) else f"{value:.3f}"
+                    for value in (extrema.minimum, extrema.maximum, extrema.span)
+                )
+            for label, text in zip(values, texts, strict=True):
+                label.setText(text)
 
     def _apply_smoothing(self) -> None:
         if self.stats is None:
