@@ -103,10 +103,12 @@ class _UIBuilderMixin:
         col.setSpacing(8)
 
         params_box, _ = self._build_field_group()
+        statistics_box = self._build_statistics_group()
         interp_box = self._build_interp_group()
         smooth_box = self._build_smoothing_group()
 
         col.addWidget(params_box)
+        col.addWidget(statistics_box)
         col.addWidget(smooth_box)
         col.addWidget(self._build_vectors_button())
         col.addWidget(interp_box)
@@ -172,6 +174,42 @@ class _UIBuilderMixin:
         )
 
         return box, form
+
+    def _build_statistics_group(self) -> QGroupBox:
+        box = QGroupBox("Unsmoothed mean statistics")
+        grid = QGridLayout(box)
+        grid.setContentsMargins(10, 12, 10, 10)
+        grid.setHorizontalSpacing(12)
+        grid.setVerticalSpacing(4)
+
+        headers = ("Component", "Minimum", "Maximum", "Max difference")
+        for column, text in enumerate(headers):
+            label = QLabel(text)
+            label.setAlignment(Qt.AlignCenter)
+            grid.addWidget(label, 0, column)
+
+        self.lbl_component_stats: dict[str, tuple[QLabel, QLabel, QLabel]] = {}
+        for row, component in enumerate(("X", "Y"), start=1):
+            name = QLabel(component)
+            name.setAlignment(Qt.AlignCenter)
+            grid.addWidget(name, row, 0)
+
+            values = tuple(QLabel("—") for _ in range(3))
+            for column, label in enumerate(values, start=1):
+                label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                label.setMinimumWidth(48)
+                grid.addWidget(label, row, column)
+            self.lbl_component_stats[component.lower()] = values
+
+        unit = QLabel("µm/s (finite window means; before smoothing)")
+        unit.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        unit.setStyleSheet("color: rgba(255,255,255,0.60);")
+        grid.addWidget(unit, 3, 0, 1, 4)
+        grid.setColumnStretch(0, 1)
+        grid.setColumnStretch(1, 1)
+        grid.setColumnStretch(2, 1)
+        grid.setColumnStretch(3, 2)
+        return box
 
     def _build_interp_group(self) -> QGroupBox:
         self._last_interp_nodes = self._INTERP_DEFAULT_NODES

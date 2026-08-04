@@ -3,7 +3,37 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from .types import FieldStats, NumericalFieldParams
+from .types import ComponentExtrema, FieldStats, NumericalFieldParams
+
+
+def component_extrema(
+    values: np.ndarray,
+    *,
+    scale: float = 1.0,
+) -> ComponentExtrema:
+    """Return min, max, and max difference for the finite grid cells.
+
+    ``values`` is normally an unsmoothed component produced by
+    :func:`compute_velocity_field`. Empty windows are represented by NaN and
+    deliberately excluded. ``scale`` allows the stored µm/frame values to be
+    presented as µm/s without modifying the field itself.
+    """
+    finite = np.asarray(values, dtype=float)
+    finite = finite[np.isfinite(finite)] * float(scale)
+    if finite.size == 0:
+        return ComponentExtrema(
+            minimum=float("nan"),
+            maximum=float("nan"),
+            span=float("nan"),
+        )
+
+    minimum = float(np.min(finite))
+    maximum = float(np.max(finite))
+    return ComponentExtrema(
+        minimum=minimum,
+        maximum=maximum,
+        span=maximum - minimum,
+    )
 
 
 def compute_velocity_field(
@@ -99,4 +129,9 @@ def compute_velocity_field(
     )
 
 
-__all__ = ["FieldStats", "NumericalFieldParams", "compute_velocity_field"]
+__all__ = [
+    "FieldStats",
+    "NumericalFieldParams",
+    "component_extrema",
+    "compute_velocity_field",
+]
