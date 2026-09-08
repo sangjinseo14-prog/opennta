@@ -12,6 +12,7 @@ class AnalysisConfig:
     sensor_size: float = field(default=6.5, metadata={"user_config": True})
     magnification: float = field(default=20, metadata={"user_config": True})
     fps: float = field(default=25.0, metadata={"user_config": True})
+    exposure_time: float = field(default=0.0, metadata={"user_config": True})
     temp: float = field(default=295.15, metadata={"user_config": True})
     eta: float = field(default=0.0009544, metadata={"user_config": True})
     KB: float = 1.380649e-23
@@ -21,6 +22,14 @@ class AnalysisConfig:
     def __post_init__(self) -> None:
         self.pixel_size = self.sensor_size / self.magnification
         self.dt = 1.0 / self.fps
+
+        if self.exposure_time < 0:
+            raise ValueError("Exposure time must be non-negative.")
+        if self.exposure_time > self.dt:
+            raise ValueError("Exposure time cannot exceed the frame interval.")
+
+    def effective_lag_time(self, lag: int = 1) -> float:
+        return lag * self.dt - self.exposure_time / 3.0
 
 
 def user_config_fields(cls) -> tuple[str, ...]:

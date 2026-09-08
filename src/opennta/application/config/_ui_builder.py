@@ -15,7 +15,7 @@ class _UIBuilderMixin:
 
     _WINDOW_TITLE = "Configure"
     _WINDOW_INIT_W = 390
-    _WINDOW_INIT_H = 270
+    _WINDOW_INIT_H = 310
     _FONT_FAMILY = "SansSerif"
 
     _UPDATE_ACCENT = "rgb(17, 103, 255)"
@@ -24,6 +24,7 @@ class _UIBuilderMixin:
         ("le_sensor_size", "Sensor pixel size", "µm"),
         ("le_magnification", "Lens magnification", "X"),
         ("le_fps", "Frame per second", ""),
+        ("le_exposure_time", "Exposure time", "ms"),
         ("le_temp", "Temperature", "K"),
         ("le_eta", "Viscosity", "mPa·s"),
     )
@@ -73,4 +74,3 @@ class _UIBuilderMixin:
             row.addWidget(btn)
 
         return row
-

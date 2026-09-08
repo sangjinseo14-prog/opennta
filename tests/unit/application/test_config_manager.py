@@ -53,6 +53,7 @@ def test_get_config_converts_display_units_to_canonical(isolated_config_dir):
         "sensor_size": {"value": 6.5, "unit": "µm"},
         "magnification": {"value": 20, "unit": "X"},
         "fps": {"value": 30.0, "unit": "Hz"},
+        "exposure_time": {"value": 40.0, "unit": "ms"},
         "temp": {"value": 25.0, "unit": "°C"},
         "eta": {"value": 0.89, "unit": "mPa·s"},
     }
@@ -61,6 +62,7 @@ def test_get_config_converts_display_units_to_canonical(isolated_config_dir):
     config = manager.get_config()
     assert config.eta == pytest.approx(0.00089)      # 0.89 mPa·s -> Pa·s
     assert config.temp == pytest.approx(298.15)      # 25 °C -> K
+    assert config.exposure_time == pytest.approx(0.040)  # 40 ms -> s
 
 
 def test_get_config_rejects_unknown_unit(isolated_config_dir):
@@ -75,16 +77,19 @@ def test_get_config_rejects_unknown_unit(isolated_config_dir):
 
 def test_get_config_round_trip_returns_analysis_config(isolated_config_dir):
     manager = ConfigManager(parent=None)
-    manager.save_to_temp({field: 1.5 for field in _USER_FIELDS})
+    data = {field: 1.5 for field in _USER_FIELDS}
+    data["exposure_time"] = 0.1
+    manager.save_to_temp(data)
 
     config = manager.get_config()
 
     assert isinstance(config, AnalysisConfig)
-    for field in _USER_FIELDS:
+    assert config.exposure_time == pytest.approx(0.1)
+    for field in set(_USER_FIELDS) - {"exposure_time"}:
         assert getattr(config, field) == pytest.approx(1.5)
 
 
-def test_get_config_raises_on_missing_keys(isolated_config_dir):
+def test_get_config_raises_on_missing_required_keys(isolated_config_dir):
     manager = ConfigManager(parent=None)
     # Intentionally drop a required user field; get_config must refuse to
     # silently fall back so a corrupted config file is surfaced loudly.
@@ -92,4 +97,27 @@ def test_get_config_raises_on_missing_keys(isolated_config_dir):
     manager.save_to_temp(partial)
 
     with pytest.raises(RuntimeError, match="missing required keys"):
+        manager.get_config()
+
+
+def test_get_config_rejects_missing_exposure_time(isolated_config_dir):
+    manager = ConfigManager(parent=None)
+    legacy = {
+        field: getattr(AnalysisConfig(), field)
+        for field in _USER_FIELDS
+        if field != "exposure_time"
+    }
+    manager.save_to_temp(legacy)
+
+    with pytest.raises(RuntimeError, match="missing required keys: exposure_time"):
+        manager.get_config()
+
+
+def test_get_config_rejects_exposure_longer_than_frame_interval(isolated_config_dir):
+    manager = ConfigManager(parent=None)
+    data = cm_mod.config_to_persisted(AnalysisConfig())
+    data["exposure_time"] = {"value": 41.0, "unit": "ms"}
+    manager.save_to_temp(data)
+
+    with pytest.raises(RuntimeError, match="cannot exceed the frame interval"):
         manager.get_config()

@@ -38,7 +38,9 @@ class DiffusionEstimator:
                 insufficient.append((pid, use_n))
                 continue
 
-            t = lags[:use_n] * self.config.dt
+            t = np.asarray(
+                [self.config.effective_lag_time(int(lag)) for lag in lags[:use_n]]
+            )
             y = msds[:use_n]
             slope, _ = np.polyfit(t, y, 1)
             D = slope / 4
