@@ -108,7 +108,8 @@ class IterativeDistributor(SizeDistributor):
         phys = PhysicalParams(
             temp_K=float(config.temp),
             eta_Pa_s=float(config.eta),
-            tau_s=float(config.dt),
+            frame_interval_s=float(config.dt),
+            exposure_time_s=float(config.exposure_time),
             kB=float(config.KB),
             # 2D displacement with per-coord SD sigma_e contributes 4 sigma_e^2.
             noise_m2=4.0 * loc_err_m * loc_err_m,

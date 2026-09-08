@@ -27,6 +27,16 @@ CONFIG_UNITS: dict[str, UnitSpec] = {
     "sensor_size": UnitSpec("µm", "µm", {"µm": (1.0, 0.0), "um": (1.0, 0.0)}),
     "magnification": UnitSpec("X", "X", {"X": (1.0, 0.0), "": (1.0, 0.0)}),
     "fps": UnitSpec("Hz", "Hz", {"Hz": (1.0, 0.0), "fps": (1.0, 0.0), "": (1.0, 0.0)}),
+    "exposure_time": UnitSpec(
+        "s",
+        "ms",
+        {
+            "s": (1.0, 0.0),
+            "ms": (1e-3, 0.0),
+            "µs": (1e-6, 0.0),
+            "us": (1e-6, 0.0),
+        },
+    ),
     "temp": UnitSpec(
         "K", "K",
         {"K": (1.0, 0.0), "°C": (1.0, 273.15), "C": (1.0, 273.15), "celsius": (1.0, 273.15)},

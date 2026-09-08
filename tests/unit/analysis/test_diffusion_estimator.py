@@ -6,6 +6,7 @@ import pytest
 
 from opennta.analysis.diffusion_estimator import DiffusionEstimator
 from opennta.analysis.msd_calculator import MSDCalculator
+from opennta.analysis.types import AnalysisConfig
 from opennta.tests._helpers.synth import brownian_tracks_df_corr
 
 
@@ -87,3 +88,18 @@ def test_uses_at_most_lag_frame_points(default_analysis_config):
     D_short, *_ = DiffusionEstimator(default_analysis_config).estimate(short, lag_frame=2)
     D_long, *_ = DiffusionEstimator(default_analysis_config).estimate(long, lag_frame=2)
     assert D_short[1] == pytest.approx(D_long[1])
+
+
+def test_blur_shifted_multilag_msd_recovers_diffusion():
+    config = AnalysisConfig(fps=25.0, exposure_time=0.040)
+    diffusion = 0.5
+    lags = np.arange(1, 5)
+    msds = 4.0 * diffusion * (
+        lags * config.dt - config.exposure_time / 3.0
+    ) + 0.02
+
+    estimated, *_ = DiffusionEstimator(config).estimate(
+        {1: (lags, msds)}, lag_frame=4
+    )
+
+    assert estimated[1] == pytest.approx(diffusion)

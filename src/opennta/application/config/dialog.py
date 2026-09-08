@@ -17,6 +17,7 @@ class ConfigDialog(_UIBuilderMixin, QDialog):
         "le_sensor_size": "sensor_size",
         "le_magnification": "magnification",
         "le_fps": "fps",
+        "le_exposure_time": "exposure_time",
         "le_temp": "temp",
         "le_eta": "eta",
     }

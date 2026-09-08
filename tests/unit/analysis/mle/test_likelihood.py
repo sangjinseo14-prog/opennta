@@ -24,7 +24,36 @@ from opennta.analysis.mle.types import PhysicalParams
 
 def _phys(noise_m2: float = 0.0) -> PhysicalParams:
     return PhysicalParams(
-        temp_K=298.0, eta_Pa_s=8.9e-4, tau_s=1.0 / 30.0, noise_m2=noise_m2
+        temp_K=298.0,
+        eta_Pa_s=8.9e-4,
+        frame_interval_s=1.0 / 30.0,
+        noise_m2=noise_m2,
+    )
+
+
+def test_physical_params_applies_uniform_exposure_motion_blur():
+    phys = PhysicalParams(
+        temp_K=298.0,
+        eta_Pa_s=8.9e-4,
+        frame_interval_s=0.040,
+        exposure_time_s=0.040,
+    )
+    diameter_m = np.asarray([100e-9])
+    diffusion = phys.kB * phys.temp_K / (3.0 * np.pi * phys.eta_Pa_s * diameter_m)
+
+    assert phys.effective_lag_time() == pytest.approx(0.040 - 0.040 / 3.0)
+    assert phys.msd_scale(diameter_m) == pytest.approx(
+        4.0 * diffusion * (0.040 - 0.040 / 3.0)
+    )
+
+
+def test_zero_exposure_preserves_unblurred_msd_scale():
+    phys = _phys()
+    diameter_m = np.asarray([100e-9])
+    diffusion = phys.kB * phys.temp_K / (3.0 * np.pi * phys.eta_Pa_s * diameter_m)
+
+    assert phys.msd_scale(diameter_m) == pytest.approx(
+        4.0 * diffusion * phys.frame_interval_s
     )
 
 
